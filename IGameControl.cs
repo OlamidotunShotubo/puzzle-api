@@ -6,4 +6,5 @@ public interface IGameControl
     Task PickDimension(string user);
     Task Stop(string user);
     Task SendSession(Session game);
+     Task GetDimension(int size);
 }
