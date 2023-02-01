@@ -1,23 +1,28 @@
 public class Puzzle
 {
-    internal int Dimension = 0;
-    internal int i = 0;
-    internal int r = 0;
-    int[,] input = null;
-    internal Puzzle(int dimension)
+    public int Dimension { get; set; } = 0;
+    public int i { get; set; } = 0;
+    public int r { get; set; } = 0;
+    public List<List<int>> input { get; set; } = new List<List<int>>();
+    public Puzzle(int dimension)
     {
-        input = new int[dimension, dimension];
+        // input = new int[dimension, dimension];
         this.Dimension = dimension;
         Scramble();
+    }
+    public Puzzle()
+    {
+
     }
     public void Scramble()
     {
         Random rand = new Random();
         var lastno = new int[Dimension * Dimension];
         int indx = 0;
-        for (int i = 0; i < input.GetLength(0); i++)
+        for (int i = 0; i < Dimension; i++)
         {
-            for (int r = 0; r < input.GetLength(1); r++)
+            input.Add(new List<int>());
+            for (int r = 0; r < Dimension; r++)
             {
                 var value = 0;
                 while (lastno.Contains(value))
@@ -27,24 +32,25 @@ public class Puzzle
                 this.i = i;
                 this.r = r;
                 lastno[indx++] = value;
-                input[i, r] = value; 
+                input[input.Count - 1].Add(value);
             }
         }
     }
     internal string Display()
     {
         var output = "";
-        for (int i = 0; i < input.GetLength(0); i++)
+        for (int i = 0; i < Dimension; i++)
         {
-            for (int r = 0; r < input.GetLength(1); r++)
+            var current = input[i];
+            for (int r = 0; r < Dimension; r++)
             {
-                if (input[i, r] != Dimension * Dimension)
+                if (current[r] != Dimension * Dimension)
                 {
-                    output += input[i, r] + " ";
+                    output += current[r] + "|";
                 }
                 else
                 {
-                    output += " ";
+                    output += " |";
                 }
             }
             output += "\n";
@@ -54,26 +60,29 @@ public class Puzzle
     public bool Check()
     {
         int prev = 0;
-        for (int i = 0; i < input.GetLength(0); i++)
+        for (int i = 0; i < Dimension; i++)
         {
-            for (int r = 0; r < input.GetLength(1); r++)
+            var current = input[i];
+            for (int r = 0; r < Dimension; r++)
             {
-                if (input[i, r] != prev + 1)
+
+                if (current[r] != prev + 1)
                 {
                     return false;
                 }
-                prev = input[i, r];
+                prev = current[r];
             }
         }
         return true;
     }
     internal Location Checklast()
     {
-        for (int i = 0; i < input.GetLength(0); i++)
+        for (int i = 0; i < Dimension; i++)
         {
-            for (int r = 0; r < input.GetLength(1); r++)
+            var current = input[i];
+            for (int r = 0; r < Dimension; r++)
             {
-                if (input[i, r] == Dimension * Dimension)
+                if (current[r] == Dimension * Dimension)
                 {
                     return new Location() { Row = i, Column = r };
                 }
@@ -97,33 +106,33 @@ public class Puzzle
             case Direction.Upwards:
                 if (i < Dimension - 1)
                 {
-                    replace = input[i, r];
-                    input[i, r] = input[i + 1, r];
-                    input[i + 1, r] = replace;
+                    replace = input[i][r];
+                    input[i][r] = input[i + 1][r];
+                    input[i + 1][r] = replace;
                 }
                 break;
             case Direction.Left:
                 if (r < Dimension - 1)
                 {
-                    replace = input[i, r];
-                    input[i, r] = input[i, r + 1];
-                    input[i, r + 1] = replace;
+                    replace = input[i][r];
+                    input[i][r] = input[i][r + 1];
+                    input[i][r + 1] = replace;
                 }
                 break;
             case Direction.Right:
                 if (r != 0)
                 {
-                    replace = input[i, r];
-                    input[i, r] = input[i, r - 1];
-                    input[i, r - 1] = replace;
+                    replace = input[i][r];
+                    input[i][r] = input[i][r - 1];
+                    input[i][r - 1] = replace;
                 }
                 break;
             case Direction.Downwards:
                 if (i != 0)
                 {
-                    replace = input[i, r];
-                    input[i, r] = input[i - 1, r];
-                    input[i - 1, r] = replace;
+                    replace = input[i][r];
+                    input[i][r] = input[i - 1][r];
+                    input[i - 1][r] = replace;
                 }
                 break;
         }
